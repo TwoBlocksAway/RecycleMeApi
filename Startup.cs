@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RecycleMeAPI.Data;
 using RecycleMeAPI.Models;
 using RecycleMeAPI.Services;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace RecycleMeAPI
 {
@@ -37,10 +38,15 @@ namespace RecycleMeAPI
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "RecycleMe API", Version = "v1" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context)
         {
             if (env.IsDevelopment())
             {
@@ -56,12 +62,22 @@ namespace RecycleMeAPI
 
             app.UseAuthentication();
 
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RecycleMe API V1");
+            });
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            DummyData.Initialize(context);
         }
     }
 }
