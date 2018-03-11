@@ -13,3 +13,8 @@ All notable changes to this project will be documented in this file.
 ### 2018-03-10
 #### Added
   - Project setup
+  - RecyclingItem model
+  - DummyData
+  - Swagger API
+  - API link
+  - Basic recycling items
