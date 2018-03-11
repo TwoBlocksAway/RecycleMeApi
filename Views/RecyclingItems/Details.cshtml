@@ -1,0 +1,54 @@
+﻿@model RecycleMeAPI.Models.RecyclingItem
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>RecyclingItem</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ContainerType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ContainerType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxSize)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MaxSize)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RecyclingFee)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RecyclingFee)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Instruction)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Instruction)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Alcoholic)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Alcoholic)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
