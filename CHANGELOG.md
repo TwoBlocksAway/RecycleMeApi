@@ -16,3 +16,5 @@ All notable changes to this project will be documented in this file.
   - RecyclingItem model
   - DummyData
   - Swagger API
+  - API link
+  - Basic recycling items
