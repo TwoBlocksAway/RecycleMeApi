@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RecycleMeAPI.Data;
 using RecycleMeAPI.Models;
 
 namespace RecycleMeAPI.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/RecyclingItems")]
     public class RecyclingItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,101 +19,130 @@ namespace RecycleMeAPI.Controllers
             _context = context;
         }
 
-        // GET: api/RecyclingItems
-        [HttpGet]
-        public IEnumerable<RecyclingItem> GetItems()
+        // GET: RecyclingItems
+        public async Task<IActionResult> Index()
         {
-            return _context.Items;
+            return View(await _context.Items.ToListAsync());
         }
 
-        // GET: api/RecyclingItems/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetRecyclingItem([FromRoute] int id)
+        // GET: RecyclingItems/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            var recyclingItem = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
-
+            var recyclingItem = await _context.Items
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (recyclingItem == null)
             {
                 return NotFound();
             }
 
-            return Ok(recyclingItem);
+            return View(recyclingItem);
         }
 
-        // PUT: api/RecyclingItems/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutRecyclingItem([FromRoute] int id, [FromBody] RecyclingItem recyclingItem)
+        // GET: RecyclingItems/Create
+        public IActionResult Create()
         {
-            if (!ModelState.IsValid)
+            return View();
+        }
+
+        // POST: RecyclingItems/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,ContainerType,MaxSize,RecyclingFee,Instruction,Alcoholic")] RecyclingItem recyclingItem)
+        {
+            if (ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                _context.Add(recyclingItem);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(recyclingItem);
+        }
+
+        // GET: RecyclingItems/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
+            var recyclingItem = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
+            if (recyclingItem == null)
+            {
+                return NotFound();
+            }
+            return View(recyclingItem);
+        }
+
+        // POST: RecyclingItems/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,ContainerType,MaxSize,RecyclingFee,Instruction,Alcoholic")] RecyclingItem recyclingItem)
+        {
             if (id != recyclingItem.Id)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(recyclingItem).State = EntityState.Modified;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecyclingItemExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(recyclingItem);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!RecyclingItemExists(recyclingItem.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(recyclingItem);
         }
 
-        // POST: api/RecyclingItems
-        [HttpPost]
-        public async Task<IActionResult> PostRecyclingItem([FromBody] RecyclingItem recyclingItem)
+        // GET: RecyclingItems/Delete/5
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return BadRequest(ModelState);
+                return NotFound();
             }
 
-            _context.Items.Add(recyclingItem);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetRecyclingItem", new { id = recyclingItem.Id }, recyclingItem);
-        }
-
-        // DELETE: api/RecyclingItems/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRecyclingItem([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var recyclingItem = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
+            var recyclingItem = await _context.Items
+                .SingleOrDefaultAsync(m => m.Id == id);
             if (recyclingItem == null)
             {
                 return NotFound();
             }
 
+            return View(recyclingItem);
+        }
+
+        // POST: RecyclingItems/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var recyclingItem = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
             _context.Items.Remove(recyclingItem);
             await _context.SaveChangesAsync();
-
-            return Ok(recyclingItem);
+            return RedirectToAction(nameof(Index));
         }
 
         private bool RecyclingItemExists(int id)

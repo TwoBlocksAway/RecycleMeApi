@@ -1,0 +1,65 @@
+﻿@model IEnumerable<RecycleMeAPI.Models.RecyclingItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ContainerType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaxSize)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.RecyclingFee)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Instruction)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Alcoholic)
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ContainerType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecyclingFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Instruction)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Alcoholic)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
