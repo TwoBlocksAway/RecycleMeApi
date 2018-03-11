@@ -28,16 +28,16 @@ namespace RecycleMeAPI.Controllers
             return _context.Items;
         }
 
-        // GET: api/RecyclingItemsApi/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetRecyclingItem([FromRoute] int id)
+        // GET: api/RecyclingItemsApi/can
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetRecyclingItem([FromRoute] string name)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var recyclingItem = await _context.Items.SingleOrDefaultAsync(m => m.Id == id);
+            var recyclingItem = await _context.Items.SingleOrDefaultAsync(m => m.Name == name);
 
             if (recyclingItem == null)
             {
